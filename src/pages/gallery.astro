@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import GalleryPage from "../components/GalleryPage.astro";
+import { business } from "../data/content";
+---
+
+<Layout
+  title={`Photo Gallery | ${business.name}`}
+  description="Browse bathroom, kitchen, laundry, and water heater projects by Spigelmyer Plumbing & Heating."
+>
+  <GalleryPage />
+</Layout>

@@ -1,0 +1,83 @@
+---
+import { business, navLinks } from "../data/content";
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm"
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+    <a href="/" class="flex items-center gap-3">
+      <img
+        src="/images/logos/logo-header.png"
+        alt={business.name}
+        class="h-12 w-auto object-contain md:h-14"
+      />
+    </a>
+
+    <nav class="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm font-medium text-gray-700 transition hover:text-brand-blue"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a href={business.phoneHref} class="btn-primary !px-4 !py-2 text-sm">
+        {business.phone}
+      </a>
+    </nav>
+
+    <button
+      id="mobile-menu-btn"
+      type="button"
+      class="rounded-lg p-2 text-gray-700 hover:bg-gray-100 lg:hidden"
+      aria-label="Open menu"
+      aria-expanded="false" aria-controls="mobile-menu"
+    >
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+
+  <nav
+    id="mobile-menu"
+    class="hidden border-t border-gray-200 bg-white px-4 py-4 lg:hidden"
+    aria-label="Mobile navigation"
+  >
+    {
+      navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="mobile-nav-link block py-2 text-base font-medium text-gray-700 hover:text-brand-blue"
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+
+  btn?.addEventListener("click", () => {
+    const open = menu?.classList.toggle("hidden") === false;
+    btn.setAttribute("aria-expanded", String(open));
+  });
+
+  document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      menu?.classList.add("hidden");
+      btn?.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>

@@ -1,0 +1,57 @@
+---
+import { business, partnerLogos } from "../data/content";
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-200 bg-brand-blue-dark py-12 text-white">
+  <div class="mx-auto max-w-6xl px-4">
+    <div class="grid gap-8 md:grid-cols-3">
+      <div>
+        <img
+          src="/images/logos/logo-header.png"
+          alt={business.name}
+          class="h-14 w-auto rounded object-contain"
+        />
+        <p class="mt-4 text-sm text-blue-200">
+          Family-owned plumbing & heating since 1981. Master Plumber licensed since 2007.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold">Contact</h3>
+        <ul class="mt-3 space-y-2 text-sm text-blue-200">
+          <li>
+            <a href={business.phoneHref} class="hover:text-white">{business.phone}</a>
+          </li>
+          <li>
+            <a href={`mailto:${business.email}`} class="hover:text-white">{business.email}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold">Quick Links</h3>
+        <ul class="mt-3 space-y-2 text-sm text-blue-200">
+          <li><a href="/#about" class="hover:text-white">About</a></li>
+          <li><a href="/#services" class="hover:text-white">Services</a></li>
+          <li><a href="/gallery" class="hover:text-white">Gallery</a></li>
+          <li><a href="/#contact" class="hover:text-white">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-6 border-t border-blue-800 pt-8">
+      {
+        partnerLogos.map((logo) => (
+          <img src={logo.src} alt={logo.alt} class="h-10 w-auto rounded bg-white/90 p-1 object-contain" loading="lazy" />
+        ))
+      }
+    </div>
+
+    <p class="mt-8 text-center text-sm text-blue-300">
+      &copy; {year} {business.name}. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<div class="h-16 md:hidden" aria-hidden="true"></div>

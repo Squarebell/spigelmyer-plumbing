@@ -1,0 +1,181 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import { galleryCategories } from "../data/content";
+
+const imagePattern = /\.(jpg|jpeg|png|webp|gif)$/i;
+
+const categories = galleryCategories.map((cat) => {
+  const dir = path.join(process.cwd(), "public/images/gallery", cat.id);
+  const files = fs.existsSync(dir)
+    ? fs.readdirSync(dir).filter((f) => imagePattern.test(f)).sort()
+    : [];
+
+  return {
+    ...cat,
+    images: files.map((file, i) => ({
+      src: `/images/gallery/${cat.id}/${file}`,
+      alt: `${cat.title} project photo ${i + 1}`,
+    })),
+  };
+});
+---
+
+<div class="bg-white py-12 md:py-16">
+  <div class="mx-auto max-w-6xl px-4 text-center">
+    <h1 class="section-heading">Photo Gallery</h1>
+    <p class="section-subheading mx-auto max-w-2xl">
+      Browse our work by project type. Click any photo for a larger view.
+    </p>
+  </div>
+</div>
+
+<nav
+  class="sticky top-[73px] z-40 border-b border-gray-200 bg-white/95 backdrop-blur-sm"
+  aria-label="Gallery categories"
+>
+  <div class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-3">
+    {
+      categories.map((cat) => (
+        <a
+          href={`#${cat.id}`}
+          class="shrink-0 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-brand-blue hover:text-brand-blue"
+        >
+          {cat.title}
+        </a>
+      ))
+    }
+  </div>
+</nav>
+
+<div class="mx-auto max-w-6xl px-4 py-12">
+  {
+    categories.map((cat, catIndex) => (
+      <section id={cat.id} class:list={["scroll-mt-36", catIndex > 0 && "mt-16 border-t border-gray-200 pt-16"]}>
+        <h2 class="text-2xl font-bold text-gray-900">{cat.title}</h2>
+        <p class="mt-2 text-gray-600">{cat.description}</p>
+
+        {cat.images.length > 0 ? (
+          <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+            {cat.images.map((img, i) => (
+              <button
+                type="button"
+                class="gallery-thumb group relative aspect-square overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
+                data-category={catIndex}
+                data-index={i}
+                aria-label={`View ${img.alt}`}
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  class="h-full w-full object-cover transition group-hover:scale-105"
+                  loading="lazy"
+                />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p class="mt-6 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-gray-500">
+            Photos coming soon — add images to <code class="text-sm">public/images/gallery/{cat.id}/</code>
+          </p>
+        )}
+      </section>
+    ))
+  }
+</div>
+
+<div
+  id="lightbox"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Photo gallery lightbox"
+>
+  <button
+    type="button"
+    id="lightbox-close"
+    class="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+    aria-label="Close lightbox"
+  >
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    id="lightbox-prev"
+    class="absolute left-4 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
+    aria-label="Previous photo"
+  >
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" class="max-h-[85vh] max-w-full rounded-lg object-contain" />
+  <p id="lightbox-caption" class="absolute bottom-4 left-0 right-0 text-center text-sm text-white/80"></p>
+  <button
+    type="button"
+    id="lightbox-next"
+    class="absolute right-4 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
+    aria-label="Next photo"
+  >
+    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</div>
+
+<script define:vars={{ categories }}>
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  let activeCategory = 0;
+  let currentIndex = 0;
+
+  function showImage(categoryIndex, index) {
+    const images = categories[categoryIndex].images;
+    activeCategory = categoryIndex;
+    currentIndex = (index + images.length) % images.length;
+    lightboxImg.src = images[currentIndex].src;
+    lightboxImg.alt = images[currentIndex].alt;
+    lightboxCaption.textContent = categories[categoryIndex].title;
+  }
+
+  function openLightbox(categoryIndex, index) {
+    showImage(categoryIndex, index);
+    lightbox.classList.remove("hidden");
+    lightbox.classList.add("flex");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add("hidden");
+    lightbox.classList.remove("flex");
+    document.body.style.overflow = "";
+  }
+
+  document.querySelectorAll(".gallery-thumb").forEach((btn) => {
+    btn.addEventListener("click", () =>
+      openLightbox(Number(btn.dataset.category), Number(btn.dataset.index))
+    );
+  });
+
+  document.getElementById("lightbox-close")?.addEventListener("click", closeLightbox);
+  document.getElementById("lightbox-prev")?.addEventListener("click", () =>
+    showImage(activeCategory, currentIndex - 1)
+  );
+  document.getElementById("lightbox-next")?.addEventListener("click", () =>
+    showImage(activeCategory, currentIndex + 1)
+  );
+
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (lightbox?.classList.contains("hidden")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") showImage(activeCategory, currentIndex - 1);
+    if (e.key === "ArrowRight") showImage(activeCategory, currentIndex + 1);
+  });
+</script>

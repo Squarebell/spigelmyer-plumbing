@@ -1,0 +1,17 @@
+---
+import { business, heroImage } from "../data/content";
+---
+<section id="home" class="home-hero">
+<div class="hero-copy"><p class="eyebrow">Plymouth Meeting & surrounding communities</p>
+<h1>A home that works.<br /><em>A plumber who cares.</em></h1>
+<p class="hero-description">From the faucet that won't stop dripping to the bathroom you've always wanted. Thoughtful plumbing and heating service, from our family to yours.</p>
+<div class="hero-actions"><a href="#contact" class="btn-primary">Tell us about your project ↗</a><a href={business.phoneHref} class="hero-phone">{business.phone}</a></div>
+<p class="hero-note">Family roots since 1981 · Master Plumber since 2007</p></div>
+<figure class="hero-photo"><img src={heroImage} alt="Completed bathroom project with custom tile and plumbing fixtures" fetchpriority="high" /><figcaption><span>Care in every detail.</span><a href="/gallery">Explore our work ↗</a></figcaption></figure>
+</section>
+<div class="trust-strip"><span>Repairs & installations</span><span>Bathroom remodeling</span><span>Water heaters & boilers</span></div>
+<section class="project-feature">
+<div><p class="eyebrow">Made for everyday living</p><h2>Small fixes.<br />Fresh starts.<br /><em>All the details.</em></h2><p>Whether you're updating a room or getting things working again, we'll help you understand your options and take the next step.</p><a class="text-link" href="#services">Find the service you need ↗</a></div>
+<a class="project-card" href="/gallery#bathrooms"><img src="/images/gallery/bathrooms/bathroom-12.jpg" alt="Bathroom remodeling project" loading="lazy" /><span>Bathrooms, thoughtfully finished ↗</span></a>
+<a class="project-card" href="/gallery#kitchens"><img src="/images/gallery/kitchens/kitchen-01.jpg" alt="Kitchen plumbing project" loading="lazy" /><span>Better everyday spaces ↗</span></a>
+</section>
